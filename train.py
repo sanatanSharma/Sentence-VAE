@@ -133,9 +133,9 @@ def main(args):
 
                 # bookkeepeing
                 if len(tracker['ELBO'].size()) == 0:
-                    tracker['ELBO'] = torch.Tensor([loss.item()])
+                    tracker['ELBO'] = tensor([loss.item()])
                 else:
-                    tracker['ELBO'] = torch.cat((tracker['ELBO'], torch.Tensor([loss.item()])))
+                    tracker['ELBO'] = torch.cat((tracker['ELBO'], tensor([loss.item()])))
 
                 if args.tensorboard_logging:
                     writer.add_scalar("%s/ELBO"%split.upper(), loss.data[0], epoch*len(data_loader) + iteration)
