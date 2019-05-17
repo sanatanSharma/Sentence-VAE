@@ -150,7 +150,7 @@ def main(args):
                 if split == 'valid':
                     if 'target_sents' not in tracker:
                         tracker['target_sents'] = list()
-                    tracker['target_sents'] += idx2word(batch['target'].numpy(), i2w=datasets['train'].get_i2w(), pad_idx=datasets['train'].pad_idx)
+                    tracker['target_sents'] += idx2word(batch['target'].cpu().numpy(), i2w=datasets['train'].get_i2w(), pad_idx=datasets['train'].pad_idx)
                     tracker['z'] = torch.cat((tracker['z'], z.data), dim=0)
 
             print("%s Epoch %02d/%i, Mean ELBO %9.4f"%(split.upper(), epoch, args.epochs, torch.mean(tracker['ELBO'])))
