@@ -67,7 +67,7 @@ def main(args):
             return min(1, step/x0)
 
     NLL = torch.nn.NLLLoss(size_average=False, ignore_index=datasets['train'].pad_idx)
-    def loss_fn(logp, target, length, mean, logv, anneal_function, step, k, x0):
+    def loss_fn(logp, target, length, mean, logv, anneal_function, step, k, x0, split):
 
         # cut-off unnecessary padding from target, and flatten
         target = target[:, :torch.max(length).item()].contiguous().view(-1)
@@ -78,7 +78,11 @@ def main(args):
 
         # KL Divergence
         KL_loss = -0.5 * torch.sum(1 + logv - mean.pow(2) - logv.exp())
-        KL_weight = kl_anneal_function(anneal_function, step, k, x0)
+
+        if split == "train":
+            KL_weight = kl_anneal_function(anneal_function, step, k, x0)
+        else:
+            KL_weight = 1.0
 
         return NLL_loss, KL_loss, KL_weight
 
@@ -119,7 +123,7 @@ def main(args):
 
                 # loss calculation
                 NLL_loss, KL_loss, KL_weight = loss_fn(logp, batch['target'],
-                    batch['length'], mean, logv, args.anneal_function, step, args.k, args.x0)
+                        batch['length'], mean, logv, args.anneal_function, step, args.k, args.x0, split)
 
                 loss = (NLL_loss + KL_weight * KL_loss)/batch_size
 
