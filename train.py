@@ -70,7 +70,7 @@ def main(args):
     def loss_fn(logp, target, length, mean, logv, anneal_function, step, k, x0, split):
 
         # cut-off unnecessary padding from target, and flatten
-        target = target[:, :torch.max(length).item()].contiguous().view(-1)
+        target = target[:, :torch.max(length).data].contiguous().view(-1)
         logp = logp.view(-1, logp.size(2))
         
         # Negative Log Likelihood
